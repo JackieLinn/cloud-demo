@@ -1,5 +1,6 @@
 package com.example.order.entity;
 
+import com.example.product.entity.Product;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -12,5 +13,5 @@ public class Order {
     private Long userId;
     private String nickName;
     private String address;
-    private List<Object> productList;
+    private List<Product> productList;
 }

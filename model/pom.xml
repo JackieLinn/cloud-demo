@@ -9,14 +9,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <!--  父项目不写代码，修改打包方式  -->
-    <packaging>pom</packaging>
-    <modules>
-        <module>service-product</module>
-        <module>service-order</module>
-    </modules>
-
-    <artifactId>services</artifactId>
+    <artifactId>model</artifactId>
 
     <properties>
         <maven.compiler.source>19</maven.compiler.source>
@@ -25,26 +18,10 @@
     </properties>
 
     <dependencies>
-        <!--  服务发现  -->
-        <dependency>
-            <groupId>com.alibaba.cloud</groupId>
-            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
-        </dependency>
-        <!--  远程调用  -->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-openfeign</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>annotationProcessor</scope>
-        </dependency>
-        <!--  公共实体model  -->
-        <dependency>
-            <groupId>com.example</groupId>
-            <artifactId>model</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
