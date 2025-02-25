@@ -4,6 +4,8 @@ spring:
   cloud:
     nacos:
       server-addr: 127.0.0.1:8848
+  config:
+    import: nacos:service-order.properties  # 导入配置
 
 server:
   port: 8000
