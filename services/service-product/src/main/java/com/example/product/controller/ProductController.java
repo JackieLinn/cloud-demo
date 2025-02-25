@@ -16,6 +16,7 @@ public class ProductController {
     // 查询商品
     @GetMapping("/product/{id}")
     public Product getProduct(@PathVariable("id") Long productId) {
+        System.out.println("这里被调用......");
         return productService.getProduct(productId);
     }
 }

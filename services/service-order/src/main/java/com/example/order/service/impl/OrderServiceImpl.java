@@ -7,6 +7,7 @@ import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -23,9 +24,12 @@ public class OrderServiceImpl implements OrderService {
     @Resource
     RestTemplate restTemplate;
 
+    @Resource
+    LoadBalancerClient loadBalancerClient;
+
     @Override
     public Order createOrder(Long productId, Long userId) {
-        Product product = getProductFromRemote(productId);
+        Product product = getProductFromRemoteWithLoadBalanceAnnotation(productId);
         Order order = new Order();
         order.setId(1L);
         // 总金额
@@ -38,6 +42,7 @@ public class OrderServiceImpl implements OrderService {
         return order;
     }
 
+    // 默认取第一个ip进行访问
     private Product getProductFromRemote(Long productId) {
         // 1. 获取到商品服务所在的所有机器 IP 和 Port
         List<ServiceInstance> instances = discoveryClient.getInstances("service-product");
@@ -47,6 +52,22 @@ public class OrderServiceImpl implements OrderService {
         log.info("远程请求: {}", url);
 
         // 2. 给远程发送请求，发送Get方法
+        return restTemplate.getForObject(url, Product.class);
+    }
+
+    // 负载均衡进行访问
+    private Product getProductFromRemoteWithLoadBalance(Long productId) {
+        ServiceInstance choose = loadBalancerClient.choose("service-product");
+        String url = "http://" + choose.getHost() + ":" + choose.getPort() + "/product/" + productId;
+        log.info("负载均衡远程请求: {}", url);
+        return restTemplate.getForObject(url, Product.class);
+    }
+
+    // 使用注解来配置负载均衡
+    private Product getProductFromRemoteWithLoadBalanceAnnotation(Long productId) {
+        // 写微服务名字即可
+        String url = "http://service-product/product/" + productId;
+        log.info("注解负载均衡远程请求: {}", url);
         return restTemplate.getForObject(url, Product.class);
     }
 }
